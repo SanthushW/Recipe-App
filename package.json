@@ -1,11 +1,18 @@
 {
-  "name": "recipe-app-api-backend",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "Recipe App API Backend",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "NIBM 23.1 Agile Group D",
-  "license": "ISC"
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.11.5"
+  }
 }
