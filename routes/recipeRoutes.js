@@ -1,8 +1,16 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { fetchRecipes, getAllCategories } = require('../controllers/recipeController');
+const {
+  fetchRecipes,
+  fetchAllRecipesPaginated,
+  getAllCategories,
+} = require("../controllers/recipeController");
 
-router.get('/recipes', fetchRecipes);
-router.get('/categories', getAllCategories);
+// routes
+router.get("/recipes", fetchRecipes);
+router.get("/categories", getAllCategories);
+
+// route for paginated recipes
+router.get("/recipes/paginated", fetchAllRecipesPaginated);
 
 module.exports = router;
