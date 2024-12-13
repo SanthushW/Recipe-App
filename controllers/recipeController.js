@@ -1,12 +1,12 @@
 const RecipeModel = require('../models/recipeModel');
 
 const fetchRecipes = (req, res) => {
-    const { limit, category } = req.query;
-
+    const { limit, category, keyword } = req.query;
+    console.log(keyword);
     const parsedLimit = parseInt(limit, 10);
     const safeLimit = isNaN(parsedLimit) || parsedLimit <= 0 ? 10 : parsedLimit; // Default limit is 10
 
-    RecipeModel.getRecipes(safeLimit, category, (err, data) => {
+    RecipeModel.getRecipes(safeLimit, category, keyword, (err, data) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to retrieve recipes.' });
         }

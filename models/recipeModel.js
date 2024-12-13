@@ -1,6 +1,6 @@
 const db = require('../config/dbConfig');
 
-const getRecipes = (limit, categoryName, callback) => {
+const getRecipes = (limit, categoryName,keyword, callback) => {
     let query;
 
     // Case 1: No limit or category
@@ -24,7 +24,12 @@ const getRecipes = (limit, categoryName, callback) => {
         `;
     }
 
-    // Case 4: Both limit and category
+    // Case 4: Keyword only
+    else if (!limit && !categoryName && keyword) {
+        query = `SELECT * FROM recipes WHERE title LIKE '%${keyword}%' OR description LIKE '%${keyword}%'`;
+    }
+
+    // Case 5: Both limit and category
     else if (limit && categoryName) {
         query = `
             SELECT recipes.* 
@@ -32,6 +37,34 @@ const getRecipes = (limit, categoryName, callback) => {
             INNER JOIN recipe_categories ON recipes.rec_id = recipe_categories.rec_id
             INNER JOIN categories ON recipe_categories.cat_id = categories.cat_id
             WHERE categories.cname = '${categoryName}' 
+            LIMIT ${parseInt(limit, 10)}
+        `;
+    }
+    // Case 6: Limit and Keyword
+    else if (limit && !categoryName && keyword) {
+        query = `SELECT * FROM recipes WHERE (title LIKE '%${keyword}%' OR description LIKE '%${keyword}%') LIMIT ${parseInt(limit, 10)}`;
+        console.log(query)
+    }
+
+    // Case 7: Category and Keyword
+    else if (!limit && categoryName && keyword) {
+        query = `
+            SELECT recipes.* 
+            FROM recipes
+            INNER JOIN recipe_categories ON recipes.rec_id = recipe_categories.rec_id
+            INNER JOIN categories ON recipe_categories.cat_id = categories.cat_id
+            WHERE categories.cname = '${categoryName}' AND (title LIKE '%${keyword}%' OR description LIKE '%${keyword}%')
+        `;
+    }
+
+    // Case 8: Limit, Category, and Keyword
+    else if (limit && categoryName && keyword) {
+        query = `
+            SELECT recipes.* 
+            FROM recipes
+            INNER JOIN recipe_categories ON recipes.rec_id = recipe_categories.rec_id
+            INNER JOIN categories ON recipe_categories.cat_id = categories.cat_id
+            WHERE categories.cname = '${categoryName}' AND (title LIKE '%${keyword}%' OR description LIKE '%${keyword}%') 
             LIMIT ${parseInt(limit, 10)}
         `;
     }
