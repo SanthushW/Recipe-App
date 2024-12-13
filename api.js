@@ -1,10 +1,10 @@
 const axios = require("axios");
 
-// Get the API key from environment variables
+
 require("dotenv").config();
 const SPOONACULAR_API_KEY = process.env.SPOONACULAR_API_KEY;
 
-// Define the base URL for Spoonacular API
+
 const SPOONACULAR_BASE_URL = "https://api.spoonacular.com/recipes";
 
 /**
@@ -17,7 +17,7 @@ const SPOONACULAR_BASE_URL = "https://api.spoonacular.com/recipes";
  */
 async function fetchRecipesByIngredients(ingredients, number = 10, ranking = 1, ignorePantry = true) {
     try {
-        // Prepare query parameters
+        
         const params = {
             apiKey: SPOONACULAR_API_KEY,
             ingredients: ingredients,
@@ -26,18 +26,18 @@ async function fetchRecipesByIngredients(ingredients, number = 10, ranking = 1, 
             ignorePantry: ignorePantry,
         };
 
-        // Make the API call
+        
         const response = await axios.get(`${SPOONACULAR_BASE_URL}/findByIngredients`, { params });
 
-        // Extract and return relevant data (recipe name, image, and ingredients used)
+        
         const recipes = response.data.map(recipe => ({
-            name: recipe.title,  // Recipe name
-            image: recipe.image,  // Recipe image
-            usedIngredients: recipe.usedIngredients.map(ingredient => ingredient.name), // Ingredients used
-            missedIngredients: recipe.missedIngredients.map(ingredient => ingredient.name)  // Missing ingredients
+            name: recipe.title,  
+            image: recipe.image,  
+            usedIngredients: recipe.usedIngredients.map(ingredient => ingredient.name), 
+            missedIngredients: recipe.missedIngredients.map(ingredient => ingredient.name)  
         }));
 
-        // Return the recipes with names
+    
         return recipes;
     } catch (error) {
         console.error("Error fetching recipes from Spoonacular:", error.message);

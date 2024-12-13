@@ -3,14 +3,11 @@ const { fetchRecipesByIngredients, fetchRecipesByName } = require("../api");
 
 const router = express.Router();
 
-/**
- * Route to search recipes by ingredients.
- * URL: /api/recipes/findByIngredients
- */
+
 router.get("/findByIngredients", async (req, res) => {
     const { ingredients, number, ranking, ignorePantry } = req.query;
 
-    // Check if ingredients are provided
+    
     if (!ingredients) {
         return res.status(400).json({
             message: "Please provide a list of ingredients.",
@@ -40,10 +37,7 @@ router.get("/findByIngredients", async (req, res) => {
     }
 });
 
-/**
- * Route to search recipes by name.
- * URL: /api/recipes/findByName
- */
+
 router.get("/findByName", async (req, res) => {
     const { name, number } = req.query;
 
@@ -65,7 +59,7 @@ router.get("/findByName", async (req, res) => {
             });
         }
 
-        // Return the list of recipes with names and other details
+        
         res.json({
             message: "Recipes fetched successfully",
             recipes: recipes,
