@@ -43,4 +43,82 @@ const fetchAllRecipesPaginated = (req, res) => {
     res.json(data);
   });
 };
+
+const createRecipe = (req, res) => {
+  // Validate input
+  const { 
+    title, 
+    description, 
+    servings, 
+    prepTimeHours, 
+    prepTimeMinutes, 
+    cookTimeHours, 
+    cookTimeMinutes,
+    ingredients,
+    instructions,
+    cooksTips,
+    categories
+  } = req.body;
+
+  // Validate required fields
+  if (!title || !description || !servings || !ingredients || !instructions) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  // Prepare recipe data
+  const recipeData = {
+    title,
+    description,
+    servings: Number(servings),
+    prepTime: {
+      hours: Number(prepTimeHours || 0),
+      minutes: Number(prepTimeMinutes || 0)
+    },
+    cookTime: {
+      hours: Number(cookTimeHours || 0),
+      minutes: Number(cookTimeMinutes || 0)
+    },
+    ingredients: JSON.parse(ingredients),
+    instructions: JSON.parse(instructions),
+    cooksTips: cooksTips || null,
+    categories: categories ? JSON.parse(categories) : null
+  };
+
+  // Handle image upload
+  if (req.file) {
+    const uploadDir = path.join(__dirname, '../uploads/recipes');
+    
+    // Ensure upload directory exists
+    if (!fs.existsSync(uploadDir)){
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    // Generate unique filename
+    const filename = `recipe_${Date.now()}${path.extname(req.file.originalname)}`;
+    const newPath = path.join(uploadDir, filename);
+
+    // Move file
+    fs.renameSync(req.file.path, newPath);
+
+    // Set image URL (adjust based on your server setup)
+    recipeData.imageUrl = `/uploads/recipes/${filename}`;
+  }
+
+  // Create recipe
+  RecipeModel.createRecipe(recipeData, (err, result) => {
+    if (err) {
+      console.error('Recipe creation error:', err);
+      return res.status(500).json({ 
+        error: "Failed to create recipe", 
+        details: err.message 
+      });
+    }
+
+    res.status(201).json({
+      message: "Recipe created successfully",
+      recipe: result
+    });
+  });
+};
+
 module.exports = { fetchRecipes, getAllCategories, fetchAllRecipesPaginated };
